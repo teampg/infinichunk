@@ -2,13 +2,16 @@ package logic.generator;
 
 import java.awt.Dimension;
 
+import com.google.common.collect.Ranges;
+
 import libnoiseforjava.NoiseGen.NoiseQuality;
 import libnoiseforjava.exception.ExceptionInvalidParam;
 import libnoiseforjava.module.Perlin;
 import logic.Cell;
 import logic.Tile;
-import logic.generator.utils.NoiseModuleDoubleGetterWrapper;
-import logic.generator.utils.SteppedNoiseGradient;
+import teampg.datatypes.valuerange.RangePartition;
+import teampg.datatypes.valuerange.ValueRangeMapper;
+import teampg.datatypes.valuerange.ValueRangeMapper.Side;
 import teampg.grid2d.GridInterface.Entry;
 import teampg.grid2d.chunkgrid.Chunk;
 import teampg.grid2d.chunkgrid.ChunkPos;
@@ -36,13 +39,14 @@ public class SimpleGenerator implements ChunkGenerator {
 		randInput.setNoiseQuality(NoiseQuality.QUALITY_STD);
 
 		//@formatter:off
-		NoiseModuleDoubleGetterWrapper wrappedInput = new NoiseModuleDoubleGetterWrapper(randInput);
-		gen = new SteppedNoiseGradient.Builder<Tile>(wrappedInput)
-				.add(-0.3, Tile.WATER)
-				.add(-0.2, Tile.GRASS1)
-				.add(0.0, Tile.GRASS2)
-				.add(0.45, Tile.DIRT)
-				.build(Tile.WALL);
+		ValueRangeMapper<Double, Tile> inputSteps =
+				new ValueRangeMapper.Builder<Double, Tile>(Ranges.closed(-1D, 1D), Tile.WATER)
+				.add(RangePartition.of(-0.3D, Side.RIGHT), Tile.GRASS1)
+				.add(RangePartition.of(-0.2D, Side.RIGHT), Tile.GRASS2)
+				.add(RangePartition.of(0D, Side.RIGHT), Tile.DIRT)
+				.add(RangePartition.of(0.45D, Side.RIGHT), Tile.WALL)
+				.build();
+		gen = new SteppedNoiseGradient<>(randInput, inputSteps);
 		//@formatter:on
 	}
 
