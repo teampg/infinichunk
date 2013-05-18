@@ -2,7 +2,7 @@ package logic.generator;
 
 import java.awt.Dimension;
 
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 import libnoiseforjava.NoiseGen.NoiseQuality;
 import libnoiseforjava.exception.ExceptionInvalidParam;
@@ -40,7 +40,7 @@ public class SimpleGenerator implements ChunkGenerator {
 
 		//@formatter:off
 		ValueRangeMapper<Double, Tile> inputSteps =
-				new ValueRangeMapper.Builder<Double, Tile>(Ranges.closed(-1D, 1D), Tile.WATER)
+				new ValueRangeMapper.Builder<Double, Tile>(Range.closed(-1D, 1D), Tile.WATER)
 				.add(RangePartition.of(-0.3D, Side.RIGHT), Tile.GRASS1)
 				.add(RangePartition.of(-0.2D, Side.RIGHT), Tile.GRASS2)
 				.add(RangePartition.of(0D, Side.RIGHT), Tile.DIRT)
@@ -55,7 +55,7 @@ public class SimpleGenerator implements ChunkGenerator {
 		Chunk<Cell> ret = new SimpleChunk<>(chunkSize);
 
 		for (Entry<Cell> e : ret.getEntries()) {
-			GlobalPos cellPos = GlobalPos.of(from, e.getPosition());
+			GlobalPos cellPos = GlobalPos.of(from, e.getPosition(), chunkSize);
 			Tile randomChoice = gen.getValue(cellPos);
 
 			ret.set(e.getPosition(), new Cell(randomChoice));

@@ -85,7 +85,7 @@ public class Board {
 
 				// if ent in cell matches toFind, return its position
 				if (entAtCell.equals(toFind)) {
-					return GlobalPos.of(ce.getPosition(), e.getPosition());
+					return GlobalPos.of(ce.getPosition(), e.getPosition(), CHUNK_SIZE);
 				}
 			}
 		}
